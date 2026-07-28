@@ -4,6 +4,16 @@
 #define Node(x) Node<x, string>
 #define pb(x) push_back(x)
 
+template <typename T, typename N>
+int loc_length(Node<T, N>* locomotiff) {
+    int count{};
+    do {
+        count += locomotiff->value.size();
+        locomotiff = locomotiff->next;
+    } while (locomotiff!= nullptr);
+    return count;
+}
+
 int main()
 {
     // k, binary tree
@@ -52,25 +62,40 @@ int main()
             string x, y; cin >> x >> y;
             int idx_x, idx_y, count{};
             for (int j = 0; j < trains.size(); j++) {
-                if (trains.at(j)->name == x) { idx_x = j; count += trains.at(j)->value.size(); }
-                if (trains.at(j)->name == y) { idx_y = j; count += trains.at(j)->value.size(); } 
+                if (trains.at(j)->name == x) { idx_x = j; }// count += trains.at(j)->value.size(); }
+                if (trains.at(j)->name == y) { idx_y = j; }// count += trains.at(j)->value.size(); } 
             }
-
+            
             mergeNode(trains.at(idx_y), trains.at(idx_x), true);
             trains.erase(trains.begin() + idx_y);
-            cout << count << endl;
+
+            Node(vector<int>)* new_loc = trains.at(idx_x);
+            
+            cout << loc_length(new_loc) << endl;
         }
         if (cmd == "PISAH") {
             string x; cin >> x;
             bool exit = false;
             for (int j = 0; j < trains.size(); j++) {
                 Node(vector<int>)* current_node = trains.at(j);
+                Node(vector<int>)* head = current_node;
                 do {
-                    if (current_node->name == x) { 
-                            
+                    if (current_node->name == x) {
+                        /* welcome to the territory of segfaults !!!*/
+                        //cout << 1 << endl;
                         current_node->prev->next = nullptr;
+                        //cout << 2 << endl;
                         current_node->prev = nullptr;
+                        //cout << 3 << endl;
+
+                        //cout << "fuck off!!" << endl;
                         trains.push_back(current_node);
+                        //cout << "fuck off!!2" << endl;
+                        
+                        int length_sep_front = loc_length(head);
+                        int length_sep_back = loc_length(current_node);
+
+                        cout << length_sep_front << " " << length_sep_back << endl;
                         exit = true;
                         break;
                     }
@@ -79,6 +104,7 @@ int main()
                 if (exit) break;
             }
         }
+        if (cmd == "TELEPORT") {}
     }
 
     // vector<int> dummy {1, 2, 3};

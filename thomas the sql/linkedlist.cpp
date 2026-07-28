@@ -16,9 +16,10 @@ template <typename T, typename N>
 int length(Node<T, N>* head) {
     Node<T, N>* current_node = head;
 
-    int l;
+    int l{0};
     do {
         l++;
+        current_node = current_node->next;
     } while (current_node != nullptr);
 
     return l;
