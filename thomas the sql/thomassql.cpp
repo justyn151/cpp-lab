@@ -4,6 +4,10 @@
 #define Node(x) Node<x, string>
 #define pb(x) push_back(x)
 
+// this piece of code is really vital to the operation
+// of this program. At this point of writing only God and we know 
+// how it works. Now, only God knows how this thing works.
+// Good luck to future developer!!
 template <typename T, typename N>
 int loc_length(Node<T, N>* locomotiff) {
     int count{};
@@ -14,20 +18,31 @@ int loc_length(Node<T, N>* locomotiff) {
     return count;
 }
 
+template <typename T, typename N>
+Node<T, N>* search_loc(Node<T, N>* head, string s) {
+    Node<T, N>* current_node = head;
+    do {
+        if (current_node->name == s) return current_node;
+        current_node = current_node->next;
+    } while (current_node != nullptr);
+    return nullptr;
+}
+
 int main()
 {
     // k, binary tree
     // n, lokomotif
     // q, query commands
+    // idx_loc & idx_j, for tracking condector position
     int k, n, q;
-    int idx_i, idx_j;
+    string idx_loc; int idx_j; Node(vector<int>)* node_loc = new Node(vector<int>);
 
     // this little piece of shit likes to overcomplicate stuff
     // FUCK -@greezed
     // rofl -@laffeyyfrederica
     // vector of KERETA-KERETA yang isinya node of LOKOMOTIF which contains vector of GERBONG
 
-    /*
+    /* if anybody forget how trains works, look at this:
     * vector<Node<..>> | Node<vector<int>>
     * k1, k2, k3       | k1 {10, 20, 30}, k2 ...
     * k1.next = k2
@@ -51,10 +66,11 @@ int main()
             p.pb(k);
         }
 
-        new_node->value = p; new_node->name = x;
+        new_node->value = p; new_node->name = x; 
         trains.pb(new_node); // pb itu push_back ygy
     }
 
+    cin >> idx_loc >> idx_j;
     cin >> q;
     for (int i = 0; i < q; i++) {
         string cmd; cin >> cmd;
@@ -104,7 +120,53 @@ int main()
                 if (exit) break;
             }
         }
-        if (cmd == "TELEPORT") {}
+        if (cmd == "TELEPORT") {
+            cin >> idx_loc;
+            idx_j = 0;
+
+            for (auto train : trains) {
+                auto r = search_loc(train, std::string(idx_loc));
+                if (r != nullptr) cout << r->value[idx_j] << '\n'; node_loc = r;
+            }
+        }
+        if (cmd == "MOVE") {
+            string direction; int j; 
+            cin >> direction >> j;
+            
+            if (direction == "RIGHT") {
+                idx_j += j;
+                while (true) {
+                    if (idx_j >= node_loc->value.size()-1 && node_loc->next == nullptr) { 
+                        cout << node_loc->value[node_loc->value.size() - 1] << endl; break;
+                    }
+                    else if (idx_j < node_loc->value.size()-1) { 
+                        cout << node_loc->value[idx_j] << endl; break;
+                    }
+                    else {
+                        node_loc = node_loc->next;
+                        idx_loc = node_loc->name;  
+                        idx_j = node_loc->value.size() - 1 - idx_j; 
+                    }
+                }
+            } else if (direction == "LEFT") {
+                // [1, 2, 3] [1, 2, 3, 4]
+                idx_j -= j;
+                while (true) {
+                    if (idx_j <= 0 && node_loc->prev == nullptr) { 
+                        cout << node_loc->value[0] << endl; break;
+                    }
+                    else if (idx_j > 0) { 
+                        cout << node_loc->value[idx_j] << endl; break;
+                    }
+                    else {
+                        node_loc = node_loc->prev;
+                        idx_loc = node_loc->name;
+                        idx_j = node_loc->value.size() - 1 + idx_j; 
+                    }
+                }
+            }
+
+        }
     }
 
     // vector<int> dummy {1, 2, 3};
@@ -116,6 +178,8 @@ int main()
 
     // displayIterator(new_Node);
 
-    displayIterator(trains.at(0));
-    displayIterator(trains.at(1));
+    // displayIterator(trains.at(0));
+    // displayIterator(trains.at(1));
+    // displayIterator(trains.at(2));
+    // displayIterator(trains.at(3));
 }

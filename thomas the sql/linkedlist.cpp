@@ -6,8 +6,8 @@ using namespace std;
 
 template <typename T, typename N>
 struct Node {
-    Node<T, N>* next;
-    Node<T, N>* prev;
+    Node<T, N>* next{nullptr};
+    Node<T, N>* prev {nullptr};
     T value;
     N name;
 };
